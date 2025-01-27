@@ -27,10 +27,14 @@ Provide permanent upgrades for runs
 
 ----
 
-## BOARD:
-Board is a 4x8 board; total of 32 card slots.  
-(Player's side is 2x8 board, opponent's side is 2x8 board)
+<br/>
+<br/>
+<br/>
 
+# GAME LOOP:
+- Player does battle-phase
+- Player travels map (like Binding of Isaac level)
+- Player does shop-phase
 
 ## BATTLE-LOOP:
 - Player plays cards
@@ -38,6 +42,17 @@ Board is a 4x8 board; total of 32 card slots.
 - Player plays cards
 - Enemy units attack
 - (repeat until either side has no cards left)
+
+----
+
+<br/>
+<br/>
+<br/>
+
+
+## BOARD:
+Board is a 4x8 board; total of 32 card slots.  
+(Player's side is 2x8 board, opponent's side is 2x8 board)
 
 
 ## DECKS:
@@ -62,6 +77,10 @@ During battle, there are more card-piles:
 - Discard pile
 - Special Draw pile
 - Special Discard pile
+During shop-phase, there are other card-piles:
+- Shop Draw pile
+- Shop discard pile
+
 
 
 ## CARDS:
