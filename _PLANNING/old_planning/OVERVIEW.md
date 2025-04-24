@@ -19,7 +19,7 @@ Currencies:
 
 ## OBJECTS:
 2 types of cards:
-- Unit cards. These have health/attack
+- Unit cards. These spawn units
 - Ability cards. These have arbitrary effects 
 
 Trinkets:
