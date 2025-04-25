@@ -3,8 +3,18 @@
 require("db")
 
 
+setmetatable(_G, {
+    __index = function(t,k)
+        error("Accessed undefined var: " .. k)
+    end,
+    __newindex = function(t,k,v)
+        error("Created global: " .. k)
+    end
+})
 
-local state = GAME
+
+
+local state = COMBAT
 
 
 

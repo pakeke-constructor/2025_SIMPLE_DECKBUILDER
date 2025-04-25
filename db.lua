@@ -6,6 +6,8 @@ local db = {}
 
 _G.db = db
 
+_G.log = require("log")
+
 
 
 local isLoading = true
@@ -29,10 +31,11 @@ Yeah, because luaLS checks for the name require.
 dumb, i know i know
 ]]
 do
-local stack = {}
+local stack = {""}
 local oldRequire = require
-local stackRequire = function(path)
+local function stackRequire(path)
     table.insert(stack, path)
+    log.trace("require: ", path)
     local result = oldRequire(path)
     table.remove(stack)
     return result
@@ -42,8 +45,8 @@ end
 function _G.require(path)
     if (path:sub(1,1) == ".") then
         -- its a relative-require!
-        local lastPath = assert(stack[#stack])
-        if lastPath then
+        local lastPath = stack[#stack]
+        if lastPath:find("%.") then -- then its a valid path1
             local subpath = lastPath:gsub('%.[^%.]+$', '')
             return stackRequire(subpath .. path)
         else
@@ -78,19 +81,20 @@ function db.requireFolder(path)
     db.walkDirectory(path:gsub("%.", "/"), function(pth)
         if pth:sub(-5,-1) == ".lua" then
             pth = pth:sub(1, -5)
-            print("loading file:", path)
+            log.trace("loading file:", path)
             require(pth:gsub("%/", "."))
         end
     end)
 end
-
-db.requireFolder("objects")
 
 
 _G.typecheck = require("typecheck")
 
 _G.objects = require("objects.exports")
 
+_G.consts = require(".consts")
+
+-- _G.loc = require("loc")
 
 
 function db.defineEvent()
@@ -129,16 +133,6 @@ end
 
 
 
-
-
-setmetatable(_G, {
-    __index = function(t,k)
-        error("Accessed undefined var: " .. k)
-    end,
-    __newindex = function(t,k,v)
-        error("Created global: " .. k)
-    end
-})
 
 
 return db
