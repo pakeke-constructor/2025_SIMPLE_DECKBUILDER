@@ -10,10 +10,6 @@ Localization and i18n infra
 
 ---@class localization
 local localization = {}
-if false then
-    _G.localization = localization
-end
-
 
 
 ---@param text string
@@ -163,10 +159,10 @@ local function tryLoad(modname, fsysobj, path)
                     translatedKeys[modname][k] = v
                 end
             else
-                umg.log.error("unable to load localization for mod '"..modname.."': "..locs)
+                log.error("unable to load localization for mod '"..modname.."': "..locs)
             end
         else
-            umg.log.error("unable to load localization for mod '"..modname.."': "..err)
+            log.error("unable to load localization for mod '"..modname.."': "..err)
         end
     end
 end
@@ -178,49 +174,47 @@ end
 ---Availability: Client and Server
 ---@param fsysobj umg.FilesystemObject
 function localization.load(fsysobj)
-    if client then
-        local loadingContext = assert(umg.getLoadingContext(), "this can only be called at load-time")
-        local lang = client.getLanguage()
+    local loadingContext = assert(db.isLoadTime(), "this can only be called at load-time")
+    local lang = love.system.getPreferredLocales()[1]
 
-        -- Localization file without country-specific code has lower priority.
-        local countryCodeOnly = lang:match("(%l%l)_%u%u")
-        if countryCodeOnly then
-            tryLoad(loadingContext.modname, fsysobj, countryCodeOnly..".json")
-        end
-
-        tryLoad(loadingContext.modname, fsysobj, lang..".json")
+    -- Localization file without country-specific code has lower priority.
+    local countryCodeOnly = lang:match("(%l%l)_%u%u")
+    if countryCodeOnly then
+        tryLoad(loadingContext.modname, fsysobj, countryCodeOnly..".json")
     end
+
+    tryLoad(loadingContext.modname, fsysobj, lang..".json")
 end
 
 
 if EXPORT_ON_EXIT then
 
-umg.on("@quit", function()
-    local fsobj = (server or client).getSaveFilesystem()
-    local jsondata = fsobj:read("localization.json")
-    local strings = {}
+local jsondata = love.filesystem.read("localization.json")
+local strings = {}
 
-    if jsondata then
-        local res, strs = pcall(json.decode, jsondata)
-        if res then
-            strings = strs
-        end
+if jsondata then
+    local res, strs = pcall(json.decode, jsondata)
+    if res then
+        strings = strs
     end
-
-    for modname, stringlist in pairs(stringsToLocalize) do
-        if not strings[modname] then
-            strings[modname] = {}
-        end
-
-        for k, v in pairs(stringlist) do
-            strings[modname][k] = v
-        end
-    end
-
-    jsondata = json.encode(strings)
-    fsobj:write("localization.json", jsondata)
-end)
-
 end
 
-umg.expose("localization", localization)
+for modname, stringlist in pairs(stringsToLocalize) do
+    if not strings[modname] then
+        strings[modname] = {}
+    end
+
+    for k, v in pairs(stringlist) do
+        strings[modname][k] = v
+    end
+end
+
+jsondata = json.encode(strings)
+love.filesystem.write("localization.json", jsondata)
+end
+
+
+
+return localization
+
+

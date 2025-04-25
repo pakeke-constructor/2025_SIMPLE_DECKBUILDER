@@ -1,6 +1,5 @@
 ---Provides type checking functionality.
----
----Availability: Client and Server
+
 ---@class typecheck
 local typecheck = {}
 

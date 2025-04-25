@@ -1,6 +1,6 @@
 
 
-require("db")
+require("globals")
 
 
 setmetatable(_G, {

@@ -1,13 +1,7 @@
 
-
 ---@class db
 --- db stands for DeckBuilder
 local db = {}
-
-_G.db = db
-
-_G.log = require("log")
-
 
 
 local isLoading = true
@@ -88,13 +82,6 @@ function db.requireFolder(path)
 end
 
 
-_G.typecheck = require("typecheck")
-
-_G.objects = require("objects.exports")
-
-_G.consts = require(".consts")
-
--- _G.loc = require("loc")
 
 
 function db.defineEvent()
@@ -130,8 +117,6 @@ end
 function db.defineUnit()
     
 end
-
-
 
 
 
